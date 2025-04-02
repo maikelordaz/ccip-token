@@ -25,6 +25,9 @@ contract Vault {
     }
 
     function redeem(uint256 amount) external {
+        if (amount == type(uint256).max) {
+            amount = i_rebaseToken.balanceOf(msg.sender);
+        }
         i_rebaseToken.burn(msg.sender, amount);
         (bool success, ) = payable(msg.sender).call{value: amount}("");
         require(success, Vault__RedeemFailed());

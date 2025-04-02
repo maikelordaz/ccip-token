@@ -13,11 +13,12 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 
 contract RebaseToken is ERC20, Ownable, AccessControl {
-    uint256 private s_interestRate = 5e10; // 10 decimals precision
-
     uint256 private constant PRECISION_FACTOR = 1e18;
     bytes32 private constant MINT_AND_BURN_ROLE =
         keccak256("MINT_AND_BURN_ROLE");
+
+    uint256 private s_interestRate = (5 * PRECISION_FACTOR) / 1e8; // 10^8-8 == 1/10^8
+
     mapping(address users => uint256 interestRate) private s_userInterestRate;
     mapping(address user => uint256 lastUpdated)
         private s_userLastUpdatedTimestamp;
@@ -41,10 +42,10 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
      * @param newInterestRate The new interest rate
      * @dev The interest rate can only decrease
      */
-    function setInteresRate(uint256 newInterestRate) external onlyOwner {
+    function setInterestRate(uint256 newInterestRate) external onlyOwner {
         // Set the new interest rate
         require(
-            newInterestRate > s_interestRate,
+            newInterestRate < s_interestRate,
             RebaseToken__InterestCanOnlyDecrease(
                 s_interestRate,
                 newInterestRate
