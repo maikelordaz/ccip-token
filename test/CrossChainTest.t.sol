@@ -117,8 +117,6 @@ contract CrossChainTest is Test {
         address remoteTokenAddress
     ) public {
         vm.selectFork(fork);
-        // bytes[] memory remotePoolAddresses = new bytes[](1);
-        // remotePoolAddresses[0] = abi.encode(remotePool);
 
         TokenPool.ChainUpdate[]
             memory chainsToAdd = new TokenPool.ChainUpdate[](1);
