@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.28;
+pragma solidity 0.8.24;
 
 import {Test, console2} from "forge-std/Test.sol";
 import {RebaseToken} from "../src/RebaseToken.sol";
@@ -26,6 +26,7 @@ contract RebaseTokentTest is Test {
         (bool success, ) = payable(address(vault)).call{value: rewardAmount}(
             ""
         );
+        require(success);
     }
 
     function testDepositLinear(uint256 amount) public {
@@ -156,7 +157,7 @@ contract RebaseTokentTest is Test {
     function testCannotCallMintAndBurn() public {
         vm.prank(user);
         vm.expectRevert();
-        rebaseToken.mint(user, 1e5);
+        rebaseToken.mint(user, 1e5, rebaseToken.getInterestRate());
 
         vm.prank(user);
         vm.expectRevert();

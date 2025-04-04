@@ -6,7 +6,7 @@
  * @notice Cross-chain rebase token
  */
 
-pragma solidity 0.8.28;
+pragma solidity 0.8.24;
 
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
@@ -44,13 +44,12 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
      */
     function setInterestRate(uint256 newInterestRate) external onlyOwner {
         // Set the new interest rate
-        require(
-            newInterestRate < s_interestRate,
-            RebaseToken__InterestCanOnlyDecrease(
+        if (newInterestRate >= s_interestRate)
+            revert RebaseToken__InterestCanOnlyDecrease(
                 s_interestRate,
                 newInterestRate
-            )
-        );
+            );
+
         s_interestRate = newInterestRate;
 
         emit InteresRateSet(newInterestRate);
@@ -72,10 +71,11 @@ contract RebaseToken is ERC20, Ownable, AccessControl {
      */
     function mint(
         address to,
-        uint256 amount
+        uint256 amount,
+        uint256 userInterestRate
     ) external onlyRole(MINT_AND_BURN_ROLE) {
         _mintAccruedInterest(to);
-        s_userInterestRate[to] = s_interestRate;
+        s_userInterestRate[to] = userInterestRate;
         _mint(to, amount);
     }
 
