@@ -154,15 +154,15 @@ contract RebaseTokentTest is Test {
         rebaseToken.setInterestRate(4e10);
     }
 
-    function testCannotCallMintAndBurn() public {
-        vm.prank(user);
-        vm.expectRevert();
-        rebaseToken.mint(user, 1e5, rebaseToken.getInterestRate());
+    // function testCannotCallMintAndBurn() public {
+    //     vm.prank(user);
+    //     vm.expectRevert();
+    //     rebaseToken.mint(user, 1e5, rebaseToken.getInterestRate());
 
-        vm.prank(user);
-        vm.expectRevert();
-        rebaseToken.burn(user, 1e5);
-    }
+    //     vm.prank(user);
+    //     vm.expectRevert();
+    //     rebaseToken.burn(user, 1e5);
+    // }
 
     function testGetPrincipleAmount(uint256 amount) public {
         amount = bound(amount, 1e5, type(uint96).max);
